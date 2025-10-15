@@ -1,0 +1,15 @@
+scope: all            # values: all | cluster
+insurance_product_id: "CAMERA_INS_TIER_2"   # ignored when scope=all
+countries: ["UK"]
+top_k: 200
+thresholds:
+  high: 0.75
+  grey: 0.55
+
+
+shortlist:
+  enable: true         # turn auto-shortlisting on/off
+  by: "combined"       # "img" | "txt" | "combined"
+  sim_img_min: 0.80    # used if by="img"
+  sim_txt_min: 0.60    # used if by="txt"
+  combined_min: 0.70   # used if by="combined"  (0.5*img + 0.5*txt)

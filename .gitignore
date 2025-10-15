@@ -1,0 +1,21 @@
+# Virtual env & Python cache
+.venv/
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+
+# Data
+data/input/demo_images/
+data/working/
+data/output/
+*.parquet
+*.arrow
+*.feather
+
+# Streamlit
+.streamlit/
+
+# VSCode
+.vscode/

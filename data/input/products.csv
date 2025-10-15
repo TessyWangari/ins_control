@@ -1,0 +1,20 @@
+product_id,title,description,image_url,taxonomy_path,brand,price,currency,country
+1001,Acme DSLR Camera 0,High-res camera,C:\Users\tmuiruri002\Desktop\mis_sold_insurance\data\input\demo_images\camera_0.jpg,Electronics > Cameras > DSLRs,Acme,499.0,GBP,UK
+1002,Acme DSLR Camera 1,High-res camera,C:\Users\tmuiruri002\Desktop\mis_sold_insurance\data\input\demo_images\camera_1.jpg,Electronics > Cameras > DSLRs,Acme,500.0,GBP,UK
+1003,Acme DSLR Camera 2,High-res camera,C:\Users\tmuiruri002\Desktop\mis_sold_insurance\data\input\demo_images\camera_2.jpg,Electronics > Cameras > DSLRs,Acme,501.0,GBP,UK
+1004,Acme DSLR Camera 3,High-res camera,C:\Users\tmuiruri002\Desktop\mis_sold_insurance\data\input\demo_images\camera_3.jpg,Electronics > Cameras > DSLRs,Acme,502.0,GBP,UK
+1005,Acme DSLR Camera 4,High-res camera,C:\Users\tmuiruri002\Desktop\mis_sold_insurance\data\input\demo_images\camera_4.jpg,Electronics > Cameras > DSLRs,Acme,503.0,GBP,UK
+1006,Acme DSLR Camera 5,High-res camera,C:\Users\tmuiruri002\Desktop\mis_sold_insurance\data\input\demo_images\camera_5.jpg,Electronics > Cameras > DSLRs,Acme,504.0,GBP,UK
+1007,Acme DSLR Camera 6,High-res camera,C:\Users\tmuiruri002\Desktop\mis_sold_insurance\data\input\demo_images\camera_6.jpg,Electronics > Cameras > DSLRs,Acme,505.0,GBP,UK
+1008,Acme DSLR Camera 7,High-res camera,C:\Users\tmuiruri002\Desktop\mis_sold_insurance\data\input\demo_images\camera_7.jpg,Electronics > Cameras > DSLRs,Acme,506.0,GBP,UK
+1009,FPV quadcopter drone with propeller kit,"Brushless motors, FPV, propeller",C:\Users\tmuiruri002\Desktop\mis_sold_insurance\data\input\demo_images\drone_0.jpg,Electronics > Cameras > Action Cameras,SkyCo,299.0,GBP,UK
+1010,Racer FPV drone 1 with gimbal,"Brushless motors, FPV, propeller",C:\Users\tmuiruri002\Desktop\mis_sold_insurance\data\input\demo_images\drone_1.jpg,Electronics > Cameras > Action Cameras,SkyCo,300.0,GBP,UK
+1011,Racer FPV drone 2 with gimbal,"Brushless motors, FPV, propeller",C:\Users\tmuiruri002\Desktop\mis_sold_insurance\data\input\demo_images\drone_2.jpg,Electronics > Cameras > Action Cameras,SkyCo,301.0,GBP,UK
+1012,Racer FPV drone 3 with gimbal,"Brushless motors, FPV, propeller",C:\Users\tmuiruri002\Desktop\mis_sold_insurance\data\input\demo_images\drone_3.jpg,Electronics > Cameras > Action Cameras,SkyCo,302.0,GBP,UK
+1013,Racer FPV drone 4 with gimbal,"Brushless motors, FPV, propeller",C:\Users\tmuiruri002\Desktop\mis_sold_insurance\data\input\demo_images\drone_4.jpg,Electronics > Cameras > Action Cameras,SkyCo,303.0,GBP,UK
+1014,Racer FPV drone 5 with gimbal,"Brushless motors, FPV, propeller",C:\Users\tmuiruri002\Desktop\mis_sold_insurance\data\input\demo_images\drone_5.jpg,Electronics > Cameras > Action Cameras,SkyCo,304.0,GBP,UK
+1015,Smartwatch with heart rate and GPS 0,AMOLED wrist wearable,C:\Users\tmuiruri002\Desktop\mis_sold_insurance\data\input\demo_images\watch_0.jpg,Electronics > Mobile Phones,TimeTech,159.0,GBP,UK
+1016,Smartwatch with heart rate and GPS 1,AMOLED wrist wearable,C:\Users\tmuiruri002\Desktop\mis_sold_insurance\data\input\demo_images\watch_1.jpg,Electronics > Mobile Phones,TimeTech,160.0,GBP,UK
+1017,Smartwatch with heart rate and GPS 2,AMOLED wrist wearable,C:\Users\tmuiruri002\Desktop\mis_sold_insurance\data\input\demo_images\watch_2.jpg,Electronics > Mobile Phones,TimeTech,161.0,GBP,UK
+1018,Smartwatch with heart rate and GPS 3,AMOLED wrist wearable,C:\Users\tmuiruri002\Desktop\mis_sold_insurance\data\input\demo_images\watch_3.jpg,Electronics > Mobile Phones,TimeTech,162.0,GBP,UK
+1019,Smartwatch with heart rate and GPS 4,AMOLED wrist wearable,C:\Users\tmuiruri002\Desktop\mis_sold_insurance\data\input\demo_images\watch_4.jpg,Electronics > Mobile Phones,TimeTech,163.0,GBP,UK
