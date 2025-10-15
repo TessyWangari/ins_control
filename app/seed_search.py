@@ -138,7 +138,7 @@ if not working_ready():
                 bootstrap_from_local_images()
                 s.update(label="Done", state="complete")
                 st.success("Data prepared. Reloading app...")
-                st.experimental_rerun()
+                st.rerun()
             except Exception as e:
                 s.update(label="Failed", state="error")
                 st.exception(e)
