@@ -1,5 +1,5 @@
 # app/pages/review_ui.py
-# Review items and generate export files with one click (no printing of Streamlit objects)
+# Review items and generate export files with one click (unique widget keys)
 
 import os, sys, math
 from pathlib import Path
@@ -44,7 +44,7 @@ if not queue_path.exists():
 
 df = pd.read_csv(queue_path)
 
-# Normalise expected columns for mixed sources
+# Normalise expected columns
 defaults = {
     "sim_img": 0.0, "sim_txt": 0.0, "conflict_score": 0.0,
     "risk_score": None, "bucket": None, "shortlist": False, "reasons": ""
@@ -91,17 +91,14 @@ else:
 
 st.write(f"Showing **{len(dfv)}** items")
 
-# ---- Helpers (NO returns of Streamlit objects) ----
+# ---- Helpers ----
 def render_image(src: str) -> None:
-    """Safely render an image without returning/printing Streamlit objects."""
     try:
         if isinstance(src, str) and src.lower().startswith(("http://","https://")):
-            st.image(src, width="stretch")
-            return
+            st.image(src, width="stretch"); return
         p = Path(src or "")
         if p.exists():
-            st.image(str(p), width="stretch")
-            return
+            st.image(str(p), width="stretch"); return
     except Exception:
         pass
     st.caption("No image")
@@ -132,44 +129,52 @@ n = len(dfv)
 pages = max(1, math.ceil(n / per_page))
 page = st.number_input("Page", min_value=1, max_value=pages, value=1, step=1)
 start, end = (page-1)*per_page, min(page*per_page, n)
-page_df = dfv.iloc[start:end]
+page_df = dfv.iloc[start:end].reset_index(drop=True)  # reset so i is predictable
 
 # ---- Cards grid ----
 cols_per_row = 3
 rows = math.ceil(len(page_df) / cols_per_row)
-it = page_df.iterrows()
 
+i_global = 0
 for _ in range(rows):
     cols = st.columns(cols_per_row, gap="medium")
     for c in cols:
-        try:
-            _, r = next(it)
-        except StopIteration:
+        if i_global >= len(page_df):
             break
+        r = page_df.iloc[i_global].to_dict()
+        i = i_global
+        i_global += 1
+
+        # Build a unique, safe row key: product_id + absolute position on the page
+        pid_raw = r.get("product_id", "")
+        pid = str(pid_raw) if pd.notna(pid_raw) else "NA"
+        row_key = f"{pid}_{start+i}"   # unique across pages and duplicates
+
         with c:
             st.markdown('<div class="card">', unsafe_allow_html=True)
 
-            # ---- IMAGE (safe) ----
-            src = r.get("image_url","")
-            render_image(src)
+            # IMAGE
+            render_image(r.get("image_url",""))
 
-            # ---- TEXT + ACTIONS ----
+            # TEXT + ACTIONS
+            sim_val = float(r.get("sim_img", 0.0) or 0.0)
             st.markdown(f"**{r.get('title','(no title)')}**")
-            st.markdown(f"<span class='badge'>sim {float(r.get('sim_img',0.0)):.2f}</span>", unsafe_allow_html=True)
-            st.markdown(f"<div class='small'>PID: {int(r['product_id']) if pd.notna(r['product_id']) else ''} · {r.get('brand','')} · {r.get('country','')}</div>", unsafe_allow_html=True)
+            st.markdown(f"<span class='badge'>sim {sim_val:.2f}</span>", unsafe_allow_html=True)
+            pid_disp = pid if pid != "NA" else ""
+            st.markdown(f"<div class='small'>PID: {pid_disp} · {r.get('brand','')} · {r.get('country','')}</div>", unsafe_allow_html=True)
             st.markdown(f"<div class='small'>Taxonomy: {r.get('taxonomy_path','')}</div>", unsafe_allow_html=True)
             st.markdown(f"<div class='small'>Insurance: {r.get('insurance_product_name','')}</div>", unsafe_allow_html=True)
             if r.get("reasons",""):
                 st.markdown(f"<div class='small'><b>Reasons:</b> {r.get('reasons','')}</div>", unsafe_allow_html=True)
 
-            reviewer = st.text_input("Reviewer", key=f"rev_{r['product_id']}", value="reviewer")
+            reviewer = st.text_input("Reviewer", key=f"rev_{row_key}", value="reviewer")
             b1, b2, b3 = st.columns(3)
-            if b1.button("Confirm", key=f"c_{r['product_id']}"):
-                save_decision(r["product_id"], "Confirm", reviewer); st.toast("Saved: Confirm ✅", icon="✅")
-            if b2.button("Reject",  key=f"r_{r['product_id']}"):
-                save_decision(r["product_id"], "Reject", reviewer);  st.toast("Saved: Reject ❌", icon="❌")
-            if b3.button("Unsure",  key=f"u_{r['product_id']}"):
-                save_decision(r["product_id"], "Unsure", reviewer);  st.toast("Saved: Unsure 🤔", icon="🤔")
+            if b1.button("Confirm", key=f"c_{row_key}"):
+                save_decision(pid, "Confirm", reviewer); st.toast("Saved: Confirm ✅", icon="✅")
+            if b2.button("Reject", key=f"r_{row_key}"):
+                save_decision(pid, "Reject", reviewer); st.toast("Saved: Reject ❌", icon="❌")
+            if b3.button("Unsure", key=f"u_{row_key}"):
+                save_decision(pid, "Unsure", reviewer); st.toast("Saved: Unsure 🤔", icon="🤔")
 
             st.markdown("</div>", unsafe_allow_html=True)
 
@@ -194,7 +199,7 @@ def run_export_inline():
 
     corr_cols = ["product_id","title","taxonomy_path","image_url","brand","price","country"]
     corr = confirmed[corr_cols].copy()
-    corr["proposed_taxonomy_path"] = ""   # placeholder for ops / smarter mapper
+    corr["proposed_taxonomy_path"] = ""
     corr["note"] = "Confirmed misclassification"
 
     url_cols = ["product_id","title","insurance_product_name","country"]
