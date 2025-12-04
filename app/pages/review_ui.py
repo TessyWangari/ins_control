@@ -103,14 +103,33 @@ def render_image(src: str) -> None:
         pass
     st.caption("No image")
 
-def save_decision(pid, decision, reviewer):
+def save_decision(pid, decision, justification: str):
+    """
+    Save the decision and optional justification.
+
+    We no longer collect the reviewer name in the UI. If you want to
+    record the user ID, do that where this function is called (e.g.
+    from session state) or by extending the audit log schema.
+    """
     out_dir.mkdir(parents=True, exist_ok=True)
     try:
         adf = pd.read_csv(audit_path)
     except FileNotFoundError:
-        adf = pd.DataFrame(columns=["product_id","decision","reviewer"])
+        adf = pd.DataFrame(columns=["product_id", "decision", "justification"])
+
+    # Ensure required columns exist (handles older audit_log files gracefully)
+    for col in ["product_id", "decision", "justification"]:
+        if col not in adf.columns:
+            adf[col] = None
+
+    # Remove any existing row for this product_id, then append latest decision
     adf = adf[adf["product_id"].astype(str) != str(pid)]
-    adf = pd.concat([adf, pd.DataFrame([{"product_id": pid, "decision": decision, "reviewer": reviewer}])], ignore_index=True)
+    new_row = {
+        "product_id": pid,
+        "decision": decision,
+        "justification": justification or "",
+    }
+    adf = pd.concat([adf, pd.DataFrame([new_row])], ignore_index=True)
     adf.to_csv(audit_path, index=False)
 
 # ---- Sticky topbar with Export button ----
@@ -167,14 +186,22 @@ for _ in range(rows):
             if r.get("reasons",""):
                 st.markdown(f"<div class='small'><b>Reasons:</b> {r.get('reasons','')}</div>", unsafe_allow_html=True)
 
-            reviewer = st.text_input("Reviewer", key=f"rev_{row_key}", value="reviewer")
+            justification = st.text_area(
+                "Justification (optional)",
+                key=f"just_{row_key}",
+                placeholder="E.g. duplicate of existing product, incorrect brand, wrong taxonomy, etc."
+            )
+
             b1, b2, b3 = st.columns(3)
             if b1.button("Confirm", key=f"c_{row_key}"):
-                save_decision(pid, "Confirm", reviewer); st.toast("Saved: Confirm ✅", icon="✅")
+                save_decision(pid, "Confirm", justification)
+                st.toast("Saved: Confirm ✅", icon="✅")
             if b2.button("Reject", key=f"r_{row_key}"):
-                save_decision(pid, "Reject", reviewer); st.toast("Saved: Reject ❌", icon="❌")
+                save_decision(pid, "Reject", justification)
+                st.toast("Saved: Reject ❌", icon="❌")
             if b3.button("Unsure", key=f"u_{row_key}"):
-                save_decision(pid, "Unsure", reviewer); st.toast("Saved: Unsure 🤔", icon="🤔")
+                save_decision(pid, "Unsure", justification)
+                st.toast("Saved: Unsure 🤔", icon="🤔")
 
             st.markdown("</div>", unsafe_allow_html=True)
 
@@ -185,13 +212,19 @@ def run_export_inline():
     try:
         a = pd.read_csv(audit_path)
     except FileNotFoundError:
-        a = pd.DataFrame(columns=["product_id","decision","reviewer"])
+        a = pd.DataFrame(columns=["product_id", "decision", "justification"])
+
+    # Ensure required columns exist
+    for col in ["product_id", "decision"]:
+        if col not in a.columns:
+            a[col] = None
 
     if a.empty or "Confirm" not in set(a["decision"]):
         st.warning("No **Confirm** decisions found in audit_log.csv. Mark some items as Confirm first.")
         return
 
-    merged = df.merge(a[["product_id","decision","reviewer"]], on="product_id", how="left")
+    # We only need product_id and decision for export
+    merged = df.merge(a[["product_id","decision"]], on="product_id", how="left")
     confirmed = merged[merged["decision"] == "Confirm"].copy()
     if confirmed.empty:
         st.warning("No confirmed items after merge. Check product_id types.")
