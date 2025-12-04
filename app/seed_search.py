@@ -178,10 +178,10 @@ with st.container():
 st.markdown("""
 <div class="hero">
   <div class="kicker">What this tool does</div>
-  <div class="h1">Upload one misclassified product → we find others like it</div>
+  <div class="h1">Upload one misclassified product and find others like it</div>
   <div class="sub">
     Upload a photo of the item that got the wrong insurance. We’ll scan your catalogue for similar products,
-    build a shortlist for review, and let you generate correction files. No database needed — it runs entirely on your files.
+    build a shortlist for review, and let you generate correction files.
   </div>
 </div>
 """, unsafe_allow_html=True)
